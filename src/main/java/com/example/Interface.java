@@ -96,6 +96,7 @@ public class Interface{
                     System.out.println("Vous ètes maintenant redirigé vers le menu du logiel en tant que locataire.\n");
                     System.out.print("Appuyez enter pour continuer.");
                     scanner.nextLine();
+                    scanner.nextLine();
                     menuLocataire();
                     return;
                 }
@@ -132,6 +133,7 @@ public class Interface{
                 System.out.println("L'inscrption s'est fait avec succès!");
                 System.out.println("Vous ètes maintenant redirigé vers la connexion au logiel en tant que locataire.\n");
                 System.out.print("Appuyez enter pour continuer.");
+                scanner.nextLine();
                 scanner.nextLine();
                 seConnecterLocataire();
                 return;
@@ -170,6 +172,7 @@ public class Interface{
                     System.out.println("Vous ètes maintenant redirigé vers le menu du logiel en tant que prpopriétaite.\n");
                     System.out.print("Appuyez enter pour continuer.");
                     scanner.nextLine();
+                    scanner.nextLine();
                     menuProprietaire();
                     return;
                 }
@@ -204,6 +207,7 @@ public class Interface{
                 System.out.println("L'inscrption s'est fait avec succès!");
                 System.out.println("Vous ètes maintenant redirigé vers la connexion au logiel en tant que prpopriétaite.\n");
                 System.out.print("Appuyez enter pour continuer.");
+                scanner.nextLine();
                 scanner.nextLine();
                 seConnecterProprietaire();
                 return;
