@@ -12,51 +12,15 @@ import org.json.simple.parser.ParseException;
 
 
 
-public class TestJson {
-    public static void main( String[] args ) throws FileNotFoundException, IOException, ParseException
-    {
-        ////// Teste différenets méthodes de manipulation de fichier JSON avec java //////
-        
-        /// Ecrit sur un fichier
-        JSONObject personnes = new JSONObject();
+public class JsonManager {
 
-        JSONArray personneslist = new JSONArray();
-
-        JSONObject personneDetails = new JSONObject();
-        personneDetails.put("Prenom", "J-P");
-        personneDetails.put("Nom", "M-C");
-        personneDetails.put("Age", "30");
-
-       personneslist.add(personneDetails);
-
-       personnes.put("personnesList", personneslist);
-
-        updateJsonFile("JsonPersonne.json", personnes);
+    //////////////////////////////////////////////////////////////////
+    ////// Foctions generales pour manipuler les fichiers JSON  //////
+    //////////////////////////////////////////////////////////////////
 
 
-        /// Va lire puis ajouter de l'info a un fichier sans modifier ce qui a deja ete entre
-        JSONObject personneDetails2 = new JSONObject();
-        personneDetails2.put("Prenom", "N");
-        personneDetails2.put("Nom", "M-C");
-        personneDetails2.put("Age", "15");
-
-        JSONObject personneObjet2 = new JSONObject();
-        personneObjet2.put("personne", personneDetails2);
-        
-
-        JSONObject personneList2 = translateFileToJSONObject("JsonPersonne.json");
-        JSONArray ja = (JSONArray)personneList2.get("personnesList");
-        ja.add(personneDetails2);
-        updateJsonFile("JsonPersonne.json", personneList2);
-      
-
-
-        /// Va lire le fichier puis corriger la valeur de mon age (30->20)
-        modifyArgumentOfList("JsonPersonne.json", "Prenom", "J-P", "Age", "20");
-    }
-
-    ////// Foctions generales pour manipuler les fichiers JSON (a ajouter plus tard dans une classe du genre "JSON manager") //////
-
+    
+    /// Met a jour un fichier JSON en fournisant un JSONObject qui va servir de nouveau de base pour JSON
     public static void updateJsonFile(String targetFile, JSONObject updatedFileInfo){
         try(FileWriter file = new FileWriter(targetFile)){
             file.write(updatedFileInfo.toJSONString());
@@ -68,6 +32,7 @@ public class TestJson {
     }
     
 
+    /// Converti un fichier JSON en objet de type JSONObject
     public static JSONObject translateFileToJSONObject(String fileName){
         JSONParser jp = new JSONParser();
         try(FileReader reader = new FileReader(fileName)){
@@ -88,6 +53,7 @@ public class TestJson {
     }
 
 
+    /// Permet de modifier l'agument d'un l'un des objet de la liste d'un des fichier JSON en entrant certaines valeurs 
     public static void modifyArgumentOfList(String targetFile, String keySearch, String keyValue, String keyChanged, String newValue){
         
         JSONObject file = translateFileToJSONObject(targetFile);
@@ -104,6 +70,7 @@ public class TestJson {
     }
 
 
+    /// Trouve l'indexe d'un objet dans une liste à partir de la valeur d'une de ses clé
     public static int findIndexInJsonList(JSONObject obj, String keySearch, String keyValue,String listName){
         
         JSONArray arr = (JSONArray)obj.get(listName);
