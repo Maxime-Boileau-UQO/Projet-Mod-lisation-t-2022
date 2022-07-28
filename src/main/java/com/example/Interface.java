@@ -29,7 +29,7 @@ public class Interface{
         System.out.println("////  00000  000   0000 0   0   0   00000  000  0   0     0000      0   0 00000 0   0  000    0   00000 000   00  ////");
         System.out.println("//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\n\n\n");
         
-        System.out.println("Bivenu sur le logiciel de location de propriété \"Location 5 minutes!\"\n\n");
+        System.out.println("Bivenu sur le logiciel de location de propriété \"Location 5 minutes!\"\nVous pouvez quitter le logiciel à tout moment avec la comande Ctrl+c.\n\n");
         System.out.println("Voulez-vous vous conecter ou vous inscrire? (c = connecter, i = inscrire)");
         String[] stringArray0 = {"c","i"};
         String reponse0 = takeValidAnswer(stringArray0);
@@ -144,7 +144,71 @@ public class Interface{
     
 
     private static void menuLocataire(){
-        System.out.println("In menu l");
+        System.out.println("\n\n\n////////////////////////////////////////");
+        System.out.println("/////////// Menu - Locataire ///////////");
+        System.out.println("////////////////////////////////////////");
+        while(true){
+            System.out.println("Veuillez sélectionner la page ou l'action que vous voulez consulter ou effectuer.");
+            System.out.println("- Rechercher unités = u");
+            System.out.println("- Paiment = p");
+            System.out.println("- Consulter bail = b");
+            System.out.println("- Compte = c");
+            System.out.println("- Retourner à la connexion = r");
+            System.out.println("- Quitter le logiciel = q");
+
+            String[] stringArray0 = {"u","p","b","c","r","q"};
+            String reponse0 = takeValidAnswer(stringArray0);
+            if(reponse0.equals("u")){
+                rechercheUniteLocataire();
+            }
+            else if(reponse0.equals("p")){
+                paimentLocataire();
+            }
+            else if(reponse0.equals("b")){
+                bailLocataire();
+            }
+            else if(reponse0.equals("c")){
+                compteLocataire();
+            }
+            else if(reponse0.equals("r")){
+                System.out.println("Ètes-vous sûr de vouloir quitter la session? (y = oui, n = non)");
+                String[] stringArray1 = {"y","n"};
+                String reponse1 = takeValidAnswer(stringArray1);
+                if(reponse1.equals("y")){
+                    seConnecterLocataire();
+                    return;
+                }
+            }
+            else{
+                System.out.println("Ètes-vous sûr de vouloir quitter le logiciel? (y = oui, n = non)");
+                String[] stringArray1 = {"y","n"};
+                String reponse1 = takeValidAnswer(stringArray1);
+                if(reponse1.equals("y")){
+                    System.out.println("Bonne fin de journée!");
+                    System.exit(0);
+                }
+            }
+            System.out.println();
+        }
+    }
+
+    private static void rechercheUniteLocataire(){
+        System.out.println("In unnite l");
+    }
+
+
+    private static void paimentLocataire(){
+        System.out.println("In paiment l");
+    }
+
+
+    private static void compteLocataire(){
+        System.out.println("In compte l");
+    }
+
+
+    private static void bailLocataire(){
+        System.out.println("In bail l");
     }
 
 
@@ -216,8 +280,65 @@ public class Interface{
         }
     }
 
+
     private static void menuProprietaire(){
-        System.out.println("In menu p");
+        System.out.println("\n\n\n/////////////////////////////////////////");
+        System.out.println("////////// Menu - Propriétaire //////////");
+        System.out.println("/////////////////////////////////////////");
+        while(true){
+            System.out.println("Veuillez sélectionner la page ou l'action que vous voulez consulter ou effectuer.");
+            System.out.println("- Paiments = p");
+            System.out.println("- Unités et baux = u");
+            System.out.println("- Compte = c");
+            System.out.println("- Retourner à la connexion = r");
+            System.out.println("- Quitter le logiciel = q");
+
+            String[] stringArray0 = {"p","u","c","r","q"};
+            String reponse0 = takeValidAnswer(stringArray0);
+            if(reponse0.equals("p")){
+                paimentProprietaire();
+            }
+            else if(reponse0.equals("u")){
+                uniteProprietaire();
+            }
+            else if(reponse0.equals("c")){
+                compteProprietaire();
+            }
+            else if(reponse0.equals("r")){
+                System.out.println("Ètes-vous sûr de vouloir quitter la session? (y = oui, n = non)");
+                String[] stringArray1 = {"y","n"};
+                String reponse1 = takeValidAnswer(stringArray1);
+                if(reponse1.equals("y")){
+                    seConnecterProprietaire();
+                    return;
+                }
+            }
+            else{
+                System.out.println("Ètes-vous sûr de vouloir quitter le logiciel? (y = oui, n = non)");
+                String[] stringArray1 = {"y","n"};
+                String reponse1 = takeValidAnswer(stringArray1);
+                if(reponse1.equals("y")){
+                    System.out.println("Bonne fin de journée!");
+                    System.exit(0);
+                }
+            }
+            System.out.println();
+        }
+    }
+
+
+    private static void uniteProprietaire(){
+        System.out.println("In unnite p");
+    }
+
+
+    private static void paimentProprietaire(){
+        System.out.println("In paiment p");
+    }
+
+
+    private static void compteProprietaire(){
+        System.out.println("In compte p");
     }
 
 }
