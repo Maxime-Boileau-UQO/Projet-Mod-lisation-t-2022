@@ -13,7 +13,7 @@ import org.json.simple.parser.ParseException;
 
 
 public class TestJson {
-    public static void main( String[] args ) throws FileNotFoundException, IOException, ParseException
+    public static void main( String[] args ) 
     {
         ////// Teste différenets méthodes de manipulation de fichier JSON avec java //////
         

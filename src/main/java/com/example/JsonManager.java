@@ -87,4 +87,15 @@ public class JsonManager {
 
         return -1;
     }
+
+
+    /// Ajoute un objet a la liste d'un des fichiers JSON
+    public static void addObjectToJsonList(JSONObject object, String targetFile){
+        JSONObject file = translateFileToJSONObject(targetFile);
+        String rawListName = file.keySet().toString();
+        String listName = rawListName.replace("[", "").replace("]", "");
+        JSONArray jArray = (JSONArray)file.get(listName);
+        jArray.add(object);
+        updateJsonFile(targetFile, file);
+    } 
 }
