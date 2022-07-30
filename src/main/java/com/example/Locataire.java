@@ -18,8 +18,11 @@ public class Locataire {
         nouveauLocataire.put("Nom d'utilisateur", nomDUtilisateur);
         nouveauLocataire.put("Cote de credit", coteDeCredit);
         nouveauLocataire.put("Cherche location", true);
-        JSONArray jarray = new JSONArray();
-        nouveauLocataire.put("Interet", jarray);
+        JSONObject interts = new JSONObject();
+        interts.put("Commercial", false);
+        interts.put("Residentiel", false);
+        interts.put("Autre", false);
+        nouveauLocataire.put("Interet", interts);
         nouveauLocataire.put("Proprietaire actuel", "");
         JsonManager.addObjectToJsonList(nouveauLocataire, "JsonLocataire.json");
         Personne.addPersonneToJson(nomDUtilisateur, motDePasse, prenom, nom);

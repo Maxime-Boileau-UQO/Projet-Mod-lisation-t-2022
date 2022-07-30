@@ -14,9 +14,10 @@ public class Proprietaire extends Personne{
     
     //Methodes statiques(peu y acceder sans instancier un objet de cette classe) 
     public static void addProprietaireToJson(String nomDUtilisateur, String motDePasse, String prenom, String nom){
-        JSONObject nouveauLocataire = new JSONObject();
-        nouveauLocataire.put("Nom d'utilisateur", nomDUtilisateur);
-        JsonManager.addObjectToJsonList(nouveauLocataire, "JsonProprietaire.json");
+        JSONObject nouveauProprietaire = new JSONObject();
+        nouveauProprietaire.put("Nom d'utilisateur", nomDUtilisateur);
+        nouveauProprietaire.put("Nombre d'unite creer", 0);
+        JsonManager.addObjectToJsonList(nouveauProprietaire, "JsonProprietaire.json");
         Personne.addPersonneToJson(nomDUtilisateur, motDePasse, prenom, nom);
     }
 

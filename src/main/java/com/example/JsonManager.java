@@ -65,7 +65,41 @@ public class JsonManager {
         JSONObject object = (JSONObject)jArray.get(index);
         //object.remove(keyChanged);
         object.put(keyChanged, newValue);
-        updateJsonFile("JsonPersonne.json", file);
+        updateJsonFile(targetFile, file);
+
+    }
+
+
+    public static void modifyIntArgumentOfList(String targetFile, String keySearch, String keyValue, String keyChanged, long newValue){
+        
+        JSONObject file = translateFileToJSONObject(targetFile);
+        String rawListName = file.keySet().toString();
+        String listName = rawListName.replace("[", "").replace("]", "");
+        int index = findIndexInJsonList(file, keySearch, keyValue, listName);
+
+        JSONArray jArray = (JSONArray)file.get(listName);
+        JSONObject object = (JSONObject)jArray.get(index);
+        //object.remove(keyChanged);
+        object.put(keyChanged, newValue);
+        updateJsonFile(targetFile, file);
+
+    }
+
+
+    public static void modifyJSONObjectOfAnObject(String targetFile, String keySearch, String keyValue, String keyChanged, String newValue) throws ParseException{
+        
+        JSONObject file = translateFileToJSONObject(targetFile);
+        String rawListName = file.keySet().toString();
+        String listName = rawListName.replace("[", "").replace("]", "");
+        int index = findIndexInJsonList(file, keySearch, keyValue, listName);
+
+        JSONArray jArray = (JSONArray)file.get(listName);
+        JSONObject object = (JSONObject)jArray.get(index);
+        //object.remove(keyChanged);
+        JSONParser parser =new JSONParser();
+        JSONObject jNewValue = (JSONObject)parser.parse(newValue);
+        object.put(keyChanged, jNewValue);
+        updateJsonFile(targetFile, file);
 
     }
 
@@ -98,4 +132,19 @@ public class JsonManager {
         jArray.add(object);
         updateJsonFile(targetFile, file);
     } 
+
+
+    /// Permet de retourner un JSONObject recherché dans une liste d'un JSON
+    public static JSONObject getJsonObjectOfAList(String targetFile, String keySearch, String keyValue){
+        
+        JSONObject file = translateFileToJSONObject(targetFile);
+        String rawListName = file.keySet().toString();
+        String listName = rawListName.replace("[", "").replace("]", "");
+        int index = findIndexInJsonList(file, keySearch, keyValue, listName);
+
+        JSONArray jArray = (JSONArray)file.get(listName);
+        JSONObject object = (JSONObject)jArray.get(index);
+        return object;
+    } 
+
 }
