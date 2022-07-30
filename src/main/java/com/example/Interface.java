@@ -1,5 +1,6 @@
 package com.example;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import java.io.FileNotFoundException;
@@ -466,36 +467,36 @@ public class Interface{
             if(reponse0.equals("u")){
                 while(true){
                     System.out.println("\nVeuillez entrer toutes les nouvelles informations en lien avec la nouvelle unité.");
-                    System.out.print("Entrez le type de l'unité (l = logement, s = surface ouverte commerciale, m = magasin)");
+                    System.out.print("- Entrez le type de l'unité (l = logement, s = surface ouverte commerciale, m = magasin)");
                     String[] stringArray1 = {"l","s","m"};
                     String reponse1 = takeValidAnswer(stringArray1);
                     String type;
                     if(reponse1.equals("l")){type = "Logement";}
                     else if(reponse1.equals("s")){type = "Surface ouverte commerciale";}
                     else{type = "Magasin";}
-                    System.out.print("Entrez l'adresse de l'unité: ");
+                    System.out.print("- Entrez l'adresse de l'unité: ");
                     String adresse = scanner.next();
-                    System.out.print("Entrez la ville de l'unité: ");
+                    System.out.print("- Entrez la ville de l'unité: ");
                     String ville = scanner.next();
-                    System.out.println("Entrez l'aire de l'unité (en m2):");
+                    System.out.println("- Entrez l'aire de l'unité (en m2):");
                     long aire = takePositiveInteger();
                     long nbChambre;
                     if(type.equals("Logement")){
-                        System.out.println("Entrez le nombre de chambre(s):");
+                        System.out.println("- Entrez le nombre de chambre(s):");
                         nbChambre = takePositiveInteger();
                     }
                     else{nbChambre = -1;}
-                    System.out.println("Entrez le nombre de salle(s) de bains(s):");
+                    System.out.println("- Entrez le nombre de salle(s) de bains(s):");
                     long nbSalleDeBain= takePositiveInteger();
-                    System.out.print("Entrez la date de construction de l'unité: ");
+                    System.out.print("- Entrez la date de construction de l'unité: ");
                     String date = scanner.next();
-                    System.out.println("Entrez la condition de l'unité (l = louable, r = pas louable pour réparation)");
+                    System.out.println("- Entrez la condition de l'unité (l = louable, r = pas louable pour réparation)");
                     String[] stringArray2 = {"l","r"};
                     String reponse2 = takeValidAnswer(stringArray2);
                     String condition;
                     if(reponse2.equals("l")){condition = "Louable";}
                     else{condition="Pas louable pour reparation";}
-                    System.out.println("Entrez l'état de l'unité (l = loué, i = libre, r = réservé)");
+                    System.out.println("- Entrez l'état de l'unité (l = loué, i = libre, r = réservé)");
                     String[] stringArray3 = {"l","i","r"};
                     String reponse3 = takeValidAnswer(stringArray3);
                     String etat;
@@ -515,6 +516,30 @@ public class Interface{
                 
             }
             else if(reponse0.equals("m")){
+                System.out.println("\nVoici vos unités:\n");
+                JSONArray jarray = JsonManager.getArrayOfJsonFile("JsonUnite.json");
+                ArrayList<String> unitesDuProprietaire = new ArrayList<String>();
+                ArrayList<String> stringArrayList = new ArrayList<String>(); 
+                stringArrayList.add("r");
+
+                int compte = 0;
+                System.out.println("X - ///// Type /// Aire(m2) /// Condition /// Adresse /////");
+                for (Object object : jarray) {
+                    JSONObject unite = (JSONObject)object;
+                    if(unite.get("Nom d'utilisateur du proprietaire").equals(nomProprietaire)){
+                        stringArrayList.add(String.valueOf(compte));
+                        unitesDuProprietaire.add(unite.get("Identifiant").toString());
+                        System.out.println(compte + " - ///// "+unite.get("Type").toString()+
+                        " /// "+unite.get("Aire").toString()+
+                        " /// "+unite.get("Condition").toString()+
+                        " /// "+unite.get("Adresse").toString()+" /////");
+                        compte++;
+                    }
+                }
+                //1 - Demande quelle unité il veut modifier ou s'il veut retourner au menu unité
+                //2 - Demande quel élément de l'unité il veut changer et s'il veut retourner au menu unité
+                //3 - Input la nouvelle valeur et met dans une boucle jusqu'à avoir une valeur satisfaisante
+                //4 - Retour au menu
 
             }
             else if(reponse0.equals("v")){

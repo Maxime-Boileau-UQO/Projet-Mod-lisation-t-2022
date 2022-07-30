@@ -147,4 +147,13 @@ public class JsonManager {
         return object;
     } 
 
+
+    public static JSONArray getArrayOfJsonFile(String targetFile){
+        JSONObject file = translateFileToJSONObject(targetFile);
+        String rawListName = file.keySet().toString();
+        String listName = rawListName.replace("[", "").replace("]", "");
+        JSONArray jArray = (JSONArray)file.get(listName);
+        return jArray;
+    }
+
 }
