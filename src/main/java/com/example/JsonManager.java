@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import javax.xml.crypto.dsig.keyinfo.KeyName;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -70,6 +72,22 @@ public class JsonManager {
     }
 
 
+    public static void modifyBoolArgumentOfList(String targetFile, String keySearch, String keyValue, String keyChanged, Boolean newValue){
+        
+        JSONObject file = translateFileToJSONObject(targetFile);
+        String rawListName = file.keySet().toString();
+        String listName = rawListName.replace("[", "").replace("]", "");
+        int index = findIndexInJsonList(file, keySearch, keyValue, listName);
+
+        JSONArray jArray = (JSONArray)file.get(listName);
+        JSONObject object = (JSONObject)jArray.get(index);
+        //object.remove(keyChanged);
+        object.put(keyChanged, newValue);
+        updateJsonFile(targetFile, file);
+
+    }
+
+
     public static void modifyIntArgumentOfList(String targetFile, String keySearch, String keyValue, String keyChanged, long newValue){
         
         JSONObject file = translateFileToJSONObject(targetFile);
@@ -112,8 +130,7 @@ public class JsonManager {
         int index = 0;
         for (Object object : arr) {
             JSONObject jobject = (JSONObject)object;
-            
-            if(keyValue.equals((String)jobject.get(keySearch))){
+            if(keyValue.equals(jobject.get(keySearch).toString())){
                 return index;
             }
             index++;

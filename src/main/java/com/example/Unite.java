@@ -13,7 +13,7 @@ import org.json.simple.parser.ParseException;
 public class Unite {
     
     //Methodes statiques(peu y acceder sans instancier un objet de cette classe) 
-    public static void addUniteToJson(String type, String adresse, String ville, long aire, String nomProprietaire, long nbChambre, long nbSalleDeBain, String date, String condition, String etat){
+    public static void addUniteToJson(String type, String adresse, String ville, long aire, String nomProprietaire, long nbChambre, long nbSalleDeBain, String date, String condition){
         JSONObject unite = new JSONObject();
         unite.put("Type", type);
         unite.put("Adresse", adresse);
@@ -26,8 +26,11 @@ public class Unite {
         unite.put("Nombre de salle de bain", nbSalleDeBain);
         unite.put("Date de contruction", date);
         unite.put("Condition", condition);
-        unite.put("Etat", etat);
-        if(condition.equals("Louable")&&etat.equals("Libre")){
+        unite.put("Etat", "Libre");
+        unite.put("Nombre de proposition de bail creer", 0);
+        unite.put("Nombre de bail creer", 0);
+        unite.put("Possede une proposition de bail", false);
+        if(condition.equals("Louable")){
             unite.put("Louable", true);
         }else{unite.put("Louable", false);}
 
