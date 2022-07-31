@@ -8,6 +8,13 @@ import org.json.simple.JSONObject;
 
 public class TimeManager {
 
+    public static void main(String[] args) {
+        JSONObject date = takeValidJObjectDate();
+        System.out.println(date);
+        JSONObject newDate = addTimeIntervalToJDate(date, 3600);
+        System.out.println(newDate);
+
+    }
     public static long calulateTimeIntervalInSeconds(String periode, long nbPeriode){
         long timeInterval;
         if(periode.equals("o")){
@@ -29,23 +36,29 @@ public class TimeManager {
     }
 
     public static JSONObject addTimeIntervalToJDate(JSONObject jDate, long interval){
-        JSONObject newJDate = jDate;
-        int anne = (int)jDate.get("Annee");
-        int mois = (int)jDate.get("Mois");
-        int jour = (int)jDate.get("Jour");
-        int heure = (int)jDate.get("Heure");
-        int minute = (int)jDate.get("Minute");
-        int seconde = (int)jDate.get("Seconde");
+        long anneL = (long)jDate.get("Annee");
+        long moisL = (long)jDate.get("Mois");
+        long jourL = (long)jDate.get("Jour");
+        long heureL = (long)jDate.get("Heure");
+        long minuteL = (long)jDate.get("Minute");
+        long secondeL = (long)jDate.get("Seconde");
+        int anne = (int)anneL;
+        int mois = (int)moisL;
+        int jour = (int)jourL;
+        int heure = (int)heureL;
+        int minute = (int)minuteL;
+        int seconde = (int)secondeL;
         Calendar cal = Calendar.getInstance();
         cal.set(anne,mois,jour,heure,minute,seconde);
         cal.add(cal.SECOND,(int)interval);
-        jDate.put("Annee",(long)cal.YEAR);
-        jDate.put("Mois",(long)cal.MONTH);
-        jDate.put("Jour",(long)cal.DAY_OF_MONTH);
-        jDate.put("Heure",(long)cal.HOUR);
-        jDate.put("Minute",(long)cal.MINUTE);
-        jDate.put("Seconde",(long)cal.SECOND);
-        return jDate;
+        JSONObject newJDate = new JSONObject();
+        newJDate.put("Annee",(long)cal.get(Calendar.YEAR));
+        newJDate.put("Mois",(long)cal.get(Calendar.MONTH));
+        newJDate.put("Jour",(long)cal.get(Calendar.DAY_OF_MONTH));
+        newJDate.put("Heure",(long)cal.get(Calendar.HOUR_OF_DAY));
+        newJDate.put("Minute",(long)cal.get(Calendar.MINUTE));
+        newJDate.put("Seconde",(long)cal.get(Calendar.SECOND));
+        return newJDate;
     }
 
     //Générise l'entrée de date pour renvoyer un objet de type JSONObject
@@ -57,7 +70,7 @@ public class TimeManager {
         while(true){
             System.out.println("Entrez l'année:");
             annee = Interface.takePositiveInteger();
-            if(!(annee>=date.getYear())){
+            if((annee>=date.getYear())){
                 if(annee == date.getYear()){isToday = true;}
                 else{isToday = false;}
                 break;
@@ -68,10 +81,10 @@ public class TimeManager {
         while(true){
             System.out.println("Entrez le mois:");
             mois = Interface.takePositiveInteger();
-            if(!(mois<=12)){
+            if((mois<=12)){
                 if(isToday){
                     if(mois >= date.getMonthValue()){
-                        if(!(mois == date.getHour())){
+                        if(!(mois == date.getMonthValue())){
                             isToday = false;
                         }
                         break;
@@ -87,7 +100,7 @@ public class TimeManager {
             if((mois == 1 || mois == 3 || mois == 5 || mois == 7 || mois == 8 || mois == 10 || mois == 12)&&jour<=31){
                 if(isToday){
                     if(jour >= date.getMonthValue()){
-                        if(!(jour == date.getHour())){
+                        if(!(jour == date.getDayOfMonth())){
                             isToday = false;
                         }
                         break;
@@ -97,7 +110,7 @@ public class TimeManager {
             else if((mois == 4 || mois == 6 || mois == 9 || mois == 11)&&jour<=30){
                 if(isToday){
                     if(jour >= date.getMonthValue()){
-                        if(!(jour == date.getHour())){
+                        if(!(jour == date.getDayOfMonth())){
                             isToday = false;
                         }
                         break;
@@ -107,7 +120,7 @@ public class TimeManager {
             else if(jour <= 27){
                 if(isToday){
                     if(jour >= date.getMonthValue()){
-                        if(!(jour == date.getHour())){
+                        if(!(jour == date.getDayOfMonth())){
                             isToday = false;
                         }
                         break;
@@ -120,7 +133,7 @@ public class TimeManager {
         while(true){
             System.out.println("Entrez l'heure:");
             heure = Interface.takePositiveInteger();
-            if(!(heure<24)){
+            if((heure<24)){
                 if(isToday){
                     if(heure >= date.getHour()){
                         if(!(heure == date.getHour())){
@@ -136,10 +149,10 @@ public class TimeManager {
         while(true){
             System.out.println("Entrez la minute:");
             minute = Interface.takePositiveInteger();
-            if(!(minute<60)){
+            if((minute<60)){
                 if(isToday){
-                    if(heure >= date.getMinute()){
-                        if(!(heure == date.getMinute())){
+                    if(minute >= date.getMinute()){
+                        if(!(minute == date.getMinute())){
                             isToday = false;
                         }
                         break;
@@ -152,7 +165,7 @@ public class TimeManager {
         while(true){
             System.out.println("Entrez la seconde:");
             seconde = Interface.takePositiveInteger();
-            if(!(seconde<60)){
+            if((seconde<60)){
                 if(isToday){
                     if(seconde >= date.getSecond()+1){
                         if(!(seconde == date.getSecond())){

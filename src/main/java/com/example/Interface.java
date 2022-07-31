@@ -179,7 +179,7 @@ public class Interface{
             String[] stringArray0 = {"u","p","b","c","r","q"};
             String reponse0 = takeValidAnswer(stringArray0);
             if(reponse0.equals("u")){
-                rechercheUniteLocataire();
+                rechercheUniteLocataire(locataireName);
             }
             else if(reponse0.equals("p")){
                 paimentLocataire();
@@ -214,8 +214,120 @@ public class Interface{
         }
     }
 
-    private static void rechercheUniteLocataire(){
-        System.out.println("In unnite l");
+    private static void rechercheUniteLocataire(String nomLocataire){
+        //1 - demande si veut juste voir toutes les unitées, toutes les unitées avec proposition de bail ou faire une recherche avancée.
+        System.out.println("\nVoulez vous voir toutes les unités = t, seulements celles possédent une proposition de bail = p ou faire une recherche avancée = r.");
+        String[] stringArray0 = {"t","p","r"};
+        String reponse = takeValidAnswer(stringArray0);
+        System.out.println("\nVoici les unités:\n");
+        JSONArray jarray = JsonManager.getArrayOfJsonFile("JsonUnite.json");
+        ArrayList<String> unitesAvecProposition = new ArrayList<String>();
+        ArrayList<String> stringArrayListUniteNames = new ArrayList<String>(); 
+
+        int compte = 0;
+         
+        //2 - Affiche les unités selon le choix en 1.
+        if(reponse.equals("t")){
+            System.out.println("X - ///// Type /// Aire(m2) /// Condition /// État /// Nom propriétaire /// Possède une proposition de bail /// Adresse /////");
+            for (Object object : jarray) {
+                JSONObject unite = (JSONObject)object;
+                JSONObject proprietaire = JsonManager.getJsonObjectOfAList("JsonPersonne.json", "Nom d'utilisateur", unite.get("Nom d'utilisateur du proprietaire").toString());
+                
+                stringArrayListUniteNames.add((String)unite.get("Identifiant"));
+                if((Boolean)unite.get("Possede une proposition de bail")){
+                    unitesAvecProposition.add(String.valueOf(compte));
+                }
+                System.out.println(compte + " - ///// "+unite.get("Type").toString()+
+                " /// "+unite.get("Aire").toString()+
+                " /// "+unite.get("Condition").toString()+
+                " /// "+unite.get("Etat").toString()+
+                " /// "+proprietaire.get("Prenom").toString()+" "+proprietaire.get("Nom").toString()+
+                " /// "+unite.get("Possede une proposition de bail").toString()+
+                " /// "+unite.get("Adresse").toString()+" /////");
+                compte++;
+            }
+        }
+        else if(reponse.equals("p")){
+            System.out.println("X - ///// Type /// Aire(m2) /// Condition /// État /// Nom propriétaire /// Adresse /////");
+            for (Object object : jarray) {
+                JSONObject unite = (JSONObject)object;
+                JSONObject proprietaire = JsonManager.getJsonObjectOfAList("JsonPersonne.json", "Nom d'utilisateur", unite.get("Nom d'utilisateur du proprietaire").toString());
+                if((Boolean)unite.get("Possede une proposition de bail")){
+                    stringArrayListUniteNames.add((String)unite.get("Identifiant").toString());
+                    unitesAvecProposition.add(String.valueOf(compte));
+                    System.out.println(compte + " - ///// "+unite.get("Type").toString()+
+                    " /// "+unite.get("Aire").toString()+
+                    " /// "+unite.get("Condition").toString()+
+                    " /// "+unite.get("Etat").toString()+
+                    " /// "+proprietaire.get("Prenom").toString()+" "+proprietaire.get("Nom").toString()+
+                    " /// "+unite.get("Adresse").toString()+" /////");
+                    compte++;
+                }
+            }
+        }
+        else{
+            ///À faire: recheche personalisé
+        }
+        JSONObject locataire = JsonManager.getJsonObjectOfAList("JsonLocataire.json", "Nom d'utilisateur", nomLocataire);
+        if(!(boolean)locataire.get("Cherche location")){
+            return;
+        }
+        //3 - Demande s'il veut créer un bail à partir d'une des unités avec prop de bail dans le cas ou il possède pas encore de bail ou s'il veut retoutner au menu.
+        System.out.println("Voulez vous créer un bail à partir de l'une de ces unitées possédent une proposition de bail? (y = oui, n= non)");
+        String[] stringsArray1 = {"y","n"};
+        reponse = takeValidAnswer(stringsArray1);
+        String[] arrayUniteAvecPropositions = new String[unitesAvecProposition.size()];
+        arrayUniteAvecPropositions = unitesAvecProposition.toArray(arrayUniteAvecPropositions);
+        if(reponse.equals("n")){
+            return;
+        }
+        JSONObject propositionDeBail = new JSONObject();
+        while(true){
+            System.out.println("Quelle unité voulez vous faire un bail avec?");
+            reponse = takeValidAnswer(arrayUniteAvecPropositions);
+            //Écrit les infos du bail
+            System.out.println("Voici les information du bail: ");
+            String nomUnite = stringArrayListUniteNames.get(Integer.valueOf(reponse));
+            propositionDeBail = JsonManager.getJsonObjectOfAList("JsonPropositionDeBail.json", "Identifiant de l'unite", nomUnite);
+            JSONObject dateDeDebut = (JSONObject)propositionDeBail.get("Date de debut");
+            System.out.println("- Durée d'une periode: "+propositionDeBail.get("Periode")+
+            "\n- Nombre de période: "+propositionDeBail.get("Nombre de periode")+
+            "\n- Loyer: "+propositionDeBail.get("Loyer")+"$ par période."+
+            "\n- Date du début du bail: "+dateDeDebut.get("Annee")+"/"+dateDeDebut.get("Mois")+"/"+dateDeDebut.get("Jour")+" "+dateDeDebut.get("Heure")+":"+dateDeDebut.get("Minute")+":"+dateDeDebut.get("Seconde"));
+            System.out.println("-Suppléments:");
+            JSONArray sumplements = (JSONArray)propositionDeBail.get("Supplements");
+            for (Object object : sumplements) {
+                JSONObject jObject = (JSONObject)object; 
+                System.out.println("    *"+jObject.get("Nom").toString()+": "+
+                jObject.get("Description").toString()+
+                ". Coût: "+jObject.get("Cout").toString()+"$ par période.");
+            }
+
+            System.out.println("Voulez vous faire un bail = b, choisir une autre unité = u ou retourner au menu = r");
+            String[] stringArray1 = {"b","u","r"};
+            reponse =takeValidAnswer(stringArray1);
+            if(reponse.equals("b")){
+                break;
+            }
+            else if(reponse.equals("u")){
+                System.out.println();
+            }
+            else{return;}
+        }
+        //4 - Entre son assurance locataire s'il en possède une.
+        System.out.println("Avez vous une assurnce locataire? (y = oui, n = non)");
+        reponse = takeValidAnswer(stringsArray1);
+        Scanner scanner = new Scanner(System.in);
+        String nomAssureur = null;
+        String numeroReferenceAssureur = null;
+        if(reponse.equals("y")){
+            System.out.print("Veuillez entrer le nom de l'assureur: ");
+            nomAssureur = scanner.next();
+            System.out.println("Veuillez entrer le numéro de référence de la police d'assuerance: ");
+            numeroReferenceAssureur = scanner.next();
+        }
+        //5 - Création du bail.
+        Bail.addBailToJson(propositionDeBail, nomAssureur, numeroReferenceAssureur, nomLocataire);
     }
 
 
@@ -458,13 +570,12 @@ public class Interface{
             System.out.println("Veuillez sélectionner l'action que vous voulez effectuer.");
             System.out.println("- Créer une nouvelle unité = u");
             System.out.println("- Modifier une unité existante = m");
-            System.out.println("- Consulter les unités bientôt vacantes = v");
+            System.out.println("- Consulter les listes d'unités = l");
             System.out.println("- Créer une proposition de bail - b");
             System.out.println("- Modifier une proposition de bail - p");
-            System.out.println("- Consulter les renouvellement de baux = c");
             System.out.println("- Retourner au menu principal = r");
 
-            String[] stringArray0 = {"u","m","v","b","p","c","r"};
+            String[] stringArray0 = {"u","m","l","b","p","r"};
             String reponse0 = takeValidAnswer(stringArray0);
             
             if(reponse0.equals("u")){
@@ -592,7 +703,7 @@ public class Interface{
                 }
                 //5 - Retour au menu
             }
-            else if(reponse0.equals("v")){
+            else if(reponse0.equals("l")){
 
             }
             else if(reponse0.equals("b")){
@@ -608,7 +719,7 @@ public class Interface{
                 for (Object object : jarray) {
                     JSONObject unite = (JSONObject)object;
                     if(unite.get("Nom d'utilisateur du proprietaire").equals(nomProprietaire)){
-                        if(!(Boolean)unite.get("Possede une porposition de bail") || !unite.get("Etat").equals("Reserve") || !(Boolean)unite.get("Possede une proposition de bail")){
+                        if(!(Boolean)unite.get("Possede une proposition de bail") && !unite.get("Etat").equals("Reserve") && unite.get("Condition").toString().equals("Louable")){
                             stringArrayList0.add(String.valueOf(compte));
                             unitesDuProprietaire.add(unite.get("Identifiant").toString());
                             System.out.println(compte + " - ///// "+unite.get("Type").toString()+
@@ -629,74 +740,75 @@ public class Interface{
                     String nomUnite = unitesDuProprietaire.get(Integer.valueOf(reponse1));
                     JSONObject jUnite = JsonManager.getJsonObjectOfAList("JsonUnite.json", "Identifiant", nomUnite);
                     ArrayList<String> stringArrayList1 = new ArrayList<String>();
-                }
-                //3 entre les information sur la proposition de bail
-                System.out.println("Veuillez entrer les informations sur la nouvelle proposition de bail");
-                System.out.println("- Entrez l'unité de la période de location. (s = secondes, m = minutes, h = heures, j = jours, o = mois(30 jours))");
-                String[] stringArray2 = {"s","m","h","j","o"};
-                String reponse2 = takeValidAnswer(stringArray2);
-                String periode;
-                if(reponse2.equals("s")){
-                    periode = "Seconde";
-                }
-                else if(reponse2.equals("m")){
-                    periode = "Minute";
-                }
-                else if(reponse2.equals("h")){
-                    periode = "Heure";
-                }
-                else if(reponse2.equals("j")){
-                    periode = "Jour";
-                }
-                else{
-                    periode = "Mois";
-                }
-                System.out.println("- Entrez le nombre de période que durera la location.");
-                long nbPeriode = takePositiveInteger(); 
-                System.out.println("- Entrez le loyer par période en $ canadien (seulement des entiers son acceptés).");
-                long loyer = takePositiveInteger(); 
-                System.out.println("- Entrez si le bail est renouvelable ou non (y = oui, n = non)");
-                String[] stringArray3 = {"y","n"};
-                String reponse3 = takeValidAnswer(stringArray3);
-                Boolean renouvlable;
-                if(reponse3.equals("y")){renouvlable = true;}
-                else{renouvlable = false;}
-                System.out.println("- Entrez la date de début de location sous le format aaaa-MM-jj-hh-mm-ss.");
-                JSONObject dateDeDebut = TimeManager.takeValidJObjectDate();
-                long interval = TimeManager.calulateTimeIntervalInSeconds(periode, nbPeriode);
-                JSONObject dateDeFin = TimeManager.addTimeIntervalToJDate(dateDeDebut, interval);
-                System.out.println("Voulez vous ajouter un supplément à cette proposition de bail? (y = oui, n = non)");
-                reponse3 = takeValidAnswer(stringArray3);
-                JSONArray suplements = new JSONArray();
-                if(reponse3.equals("y")){
-                    while(true){
-                        JSONObject suplement = new JSONObject();
-                        System.out.print("- Entrez le nom du supplément:");
-                        String nomSuplement = scanner.next();
-                        System.out.println("- Entrez coût du supplément par période en $ canadien (seulement des entiers son acceptés).");
-                        long cout = takePositiveInteger();
-                        suplement.put("Nom", nomSuplement);
-                        suplement.put("Cout", cout);
-                        suplements.add(suplement);
-                        System.out.println("Voulez vous ajouter un autre supplément à cette proposition de bail? (y = oui, n = non)");
-                        reponse3 = takeValidAnswer(stringArray3);
-                        if(reponse3.equals("n")){break;}
+                    //3 entre les information sur la proposition de bail
+                    System.out.println("Veuillez entrer les informations sur la nouvelle proposition de bail");
+                    System.out.println("- Entrez l'unité de la période de location. (s = secondes, m = minutes, h = heures, j = jours, o = mois(30 jours))");
+                    String[] stringArray2 = {"s","m","h","j","o"};
+                    String reponse2 = takeValidAnswer(stringArray2);
+                    String periode;
+                    if(reponse2.equals("s")){
+                        periode = "Seconde";
+                    }
+                    else if(reponse2.equals("m")){
+                        periode = "Minute";
+                    }
+                    else if(reponse2.equals("h")){
+                        periode = "Heure";
+                    }
+                    else if(reponse2.equals("j")){
+                        periode = "Jour";
+                    }
+                    else{
+                        periode = "Mois";
+                    }
+                    System.out.println("- Entrez le nombre de période que durera la location.");
+                    long nbPeriode = takePositiveInteger(); 
+                    System.out.println("- Entrez le loyer par période en $ canadien (seulement des entiers son acceptés).");
+                    long loyer = takePositiveInteger(); 
+                    System.out.println("- Entrez si le bail est renouvelable ou non (y = oui, n = non)");
+                    String[] stringArray3 = {"y","n"};
+                    String reponse3 = takeValidAnswer(stringArray3);
+                    Boolean renouvelable;
+                    if(reponse3.equals("y")){renouvelable = true;}
+                    else{renouvelable = false;}
+                    System.out.println("- Entrez la date de début de location sous le format aaaa-MM-jj-hh-mm-ss.");
+                    JSONObject dateDeDebut = TimeManager.takeValidJObjectDate();
+                    long interval = TimeManager.calulateTimeIntervalInSeconds(reponse2, nbPeriode);
+                    JSONObject dateDeFin = TimeManager.addTimeIntervalToJDate(dateDeDebut, interval);
+                    System.out.println("Voulez vous ajouter un supplément à cette proposition de bail? (y = oui, n = non)");
+                    reponse3 = takeValidAnswer(stringArray3);
+                    JSONArray suplements = new JSONArray();
+                    if(reponse3.equals("y")){
+                        while(true){
+                            JSONObject suplement = new JSONObject();
+                            System.out.print("- Entrez le nom du supplément: ");
+                            String nomSuplement = scanner.next();
+                            System.out.print("- Entrez une description du suplément: ");
+                            String descriptionSuplement =  scanner.next();
+                            System.out.println("- Entrez coût du supplément par période en $ canadien (seulement des entiers son acceptés).");
+                            long cout = takePositiveInteger();
+                            suplement.put("Nom", nomSuplement);
+                            suplement.put("Description", descriptionSuplement);
+                            suplement.put("Cout", cout);
+                            suplements.add(suplement);
+                            System.out.println("Voulez vous ajouter un autre supplément à cette proposition de bail? (y = oui, n = non)");
+                            reponse3 = takeValidAnswer(stringArray3);
+                            if(reponse3.equals("n")){break;}
+                        }
+                    }
+                    //4 Créer la proposition de bail via les reponses donnes
+                    System.out.println("Voulez vous publier cette proposition de bail? (y = oui, n = non)");
+                    reponse3 = takeValidAnswer(stringArray3);
+                    if(reponse3.equals("y")){
+                        PropositionDeBail.createPropositionDeBail(nomUnite, periode, nbPeriode, loyer, dateDeDebut, dateDeFin, renouvelable, nomProprietaire, suplements);
                     }
                 }
-                System.out.println("Voulez vous publier cette proposition de bail? (y = oui, n = non)");
-                reponse3 = takeValidAnswer(stringArray3);
-                if(reponse3.equals("y")){
-                    PropositionDeBail.createPropositionDeBail();
-                }
-
-                //4 Créer la proposition de bail via les reponses donnes
+                
             }
             else if(reponse0.equals("p")){
 
             }
-            else if(reponse0.equals("c")){
-
-            }
+            
             else{
                 menuLocataire(nomProprietaire);
                 System.out.println("--------------------");
