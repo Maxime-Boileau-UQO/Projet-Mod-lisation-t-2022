@@ -8,7 +8,7 @@ import org.json.simple.JSONObject;
 
 public class Solde {
     public static void main(String[] args) {
-        saisirPaiement("max");
+        afficherSoldeEtHistoriqueDePaiementProprietaire("max");
     }
     
     // Créer un nouveau solde
@@ -57,13 +57,24 @@ public class Solde {
                 JSONObject dateDebut = (JSONObject)bail.get("Date de debut");
                 JSONObject locataire = JsonManager.getJsonObjectOfAList("JsonPersonne.json", "Nom d'utilisateur", solde.get("Locataire").toString());
                 System.out.println("/// "+unite.get("Adresse").toString()+" - "+
-                dateDebut.get("Annee").toString()+"/"+dateDebut.get("Mois").toString()+"/"+dateDebut.get("Jour").toString()+
-                "\n/// Locataire: "+locataire.get("Prenom").toString()+" "+locataire.get("Nom").toString()+
+                dateDebut.get("Annee").toString()+"/"+dateDebut.get("Mois").toString()+"/"+dateDebut.get("Jour").toString()+" ////"+
+                "\n//// Locataire: "+locataire.get("Prenom").toString()+" "+locataire.get("Nom").toString()+
                 "\n- Loyer: "+solde.get("Loyer")+"$");
                 for (Object object2 : (JSONArray)solde.get("Cout supplements")) {
                     JSONObject supplement = (JSONObject)object2;
                     System.out.println("- "+supplement.get("Nom")+": "+supplement.get("Cout")+"$");
                 }
+                //Affiche les differents paiements 
+                System.out.println("\n- Paiements:");
+                JSONArray paiements = (JSONArray)solde.get("Paiements");
+                for (Object object2 : paiements) {
+                    JSONObject paiement = (JSONObject)object2;
+                    JSONObject date = (JSONObject)paiement.get("Date");
+                    System.out.println("    * Date: "+date.get("Annee")+"/"+date.get("Mois")+"/"+date.get("Jour")+" "+
+                    date.get("Heure")+":"+date.get("Minute")+":"+date.get("Seconde")+":"+
+                    ". Montant: "+paiement.get("Montant")+"$.");
+                }
+
                 //Afficher l'historique des paiements
                 System.out.println("\n- Total: "+solde.get("Total")+"$"+
                 "\n- Payé: "+solde.get("Payer")+"$\n--------------------\n");
@@ -80,7 +91,7 @@ public class Solde {
         int compte = 0;
         for (Object object : soldes) {
             JSONObject solde = (JSONObject)object;
-            if(solde.get("Proprietaire").toString().equals(nomProprietaire)){
+            if(solde.get("Proprietaire").toString().equals(nomProprietaire)&&(Boolean)solde.get("Fini de payer")){
                 JSONObject unite = JsonManager.getJsonObjectOfAList("JsonUnite.json", "Identifiant", solde.get("Identifiant de l'unite").toString());
                 JSONObject bail = JsonManager.getJsonObjectOfAList("JsonBail.json", "Identifiant", solde.get("Identifiant du bail").toString());
                 JSONObject dateDebut = (JSONObject)bail.get("Date de debut");
@@ -127,6 +138,5 @@ public class Solde {
         newPaiement.put("Date",now);
         paiements.add(newPaiement);
         JsonManager.modifyJArrayArgumentOfList("JsonSolde.json", "Identifiant du bail", idBail, "Paiements", paiements);
-        //Faire en sorte que ca n'affiche pas les solde fini
     }
 }
