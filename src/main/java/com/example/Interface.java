@@ -60,7 +60,7 @@ public class Interface{
     }
 
 
-    private static String takeValidAnswer(String[] arguments){
+    public static String takeValidAnswer(String[] arguments){
         Scanner scanner = new Scanner(System.in);
         while(true){
             System.out.print("Réponse: ");
@@ -493,7 +493,7 @@ public class Interface{
             String[] stringArray0 = {"p","u","c","r","q"};
             String reponse0 = takeValidAnswer(stringArray0);
             if(reponse0.equals("p")){
-                paimentProprietaire();
+                paimentProprietaire(nomProprietaire);
             }
             else if(reponse0.equals("u")){
                 uniteProprietaire(nomProprietaire);
@@ -557,8 +557,27 @@ public class Interface{
     }
 
 
-    private static void paimentProprietaire(){
-        System.out.println("In paiment p");
+    private static void paimentProprietaire(String nomProprietaire){
+        System.out.println("\n\n////// Paiements - Propriétaire //////");
+        while(true){
+            System.out.println("Veuillez sélectionner l'action que vous voulez effectuer.");
+            System.out.println("- Afficher l'historique de paiement = h");
+            System.out.println("- Saisir le paiement d'un locataire = p");
+            System.out.println("- Retourner au menu principal = r");
+
+            String[] stringArray0 = {"h","p","r"};
+            String reponse = takeValidAnswer(stringArray0);
+
+            if(reponse.equals("h")){
+                Solde.afficherSoldeEtHistoriqueDePaiementProprietaire(nomProprietaire);
+            }
+            else if(reponse.equals("p")){
+                Solde.saisirPaiement(nomProprietaire);
+            }
+            else{
+                return;
+            }
+        }
     }
 
 
@@ -683,16 +702,17 @@ public class Interface{
                         String reponse4 = takeValidAnswer(stringArray3);
                         if(reponse4.equals("l")){
                             JsonManager.modifyArgumentOfList("JsonUnite.json", "Identifiant", nomUnite, elementChange, "Louable");
-                            if(!jUnite.get("Etat").toString().equals("Reserve")){
-                                JsonManager.modifyBoolArgumentOfList("JsonUnite.json", "Identifiant", nomUnite, "Louable", true);
-                            }
-                            else{
-                                JsonManager.modifyBoolArgumentOfList("JsonUnite.json", "Identifiant", nomUnite, "Louable", false);
-                            }
                         }
                         else{
                             JsonManager.modifyArgumentOfList("JsonUnite.json", "Identifiant", nomUnite, elementChange, "Pas louable pour reparation");
-                            JsonManager.modifyBoolArgumentOfList("JsonUnite.json", "Identifiant", nomUnite, "Louable", false);
+                            JSONArray jArray2 = JsonManager.getArrayOfJsonFile("JsonPropositionDeBail.json");
+                            for (Object object : jArray2) {
+                                JSONObject proposition = (JSONObject)object;
+                                if(proposition.get("Proprietaire").equals(nomProprietaire)){
+                                    JsonManager.removeObjectToJsonList("Proprietaire", nomProprietaire, "JsonPropositionDeBail.json");
+                                    break;
+                                }
+                            }
                         }
                     }
                     else{

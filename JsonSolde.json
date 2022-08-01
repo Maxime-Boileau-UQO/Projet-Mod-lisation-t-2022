@@ -1,1 +1,1 @@
-{"soldeList":[]}
+{"soldeList":[{"Loyer":20,"Payer":30,"Identifiant du bail":"max2","Paiements":[{"Montant":5,"Date":{"Jour":1,"Minute":28,"Seconde":20,"Annee":2022,"Mois":8,"Heure":0}},{"Montant":25,"Date":{"Jour":1,"Minute":28,"Seconde":49,"Annee":2022,"Mois":8,"Heure":0}}],"Identifiant de l'unite":"max1","Proprietaire":"max","Total":30,"Fini de payer":true,"Cout supplements":[{"Cout":10,"Nom":"Stationnement"}],"Locataire":"JPP"}]}

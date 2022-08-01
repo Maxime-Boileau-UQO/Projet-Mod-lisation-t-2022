@@ -9,9 +9,7 @@ import org.json.simple.JSONObject;
 public class TimeManager {
 
     public static void main(String[] args) {
-        JSONObject date = takeValidJObjectDate();
-        System.out.println(date);
-        JSONObject newDate = addTimeIntervalToJDate(date, 3600);
+        JSONObject newDate = getPresentTime();
         System.out.println(newDate);
 
     }
@@ -43,7 +41,7 @@ public class TimeManager {
         long minuteL = (long)jDate.get("Minute");
         long secondeL = (long)jDate.get("Seconde");
         int anne = (int)anneL;
-        int mois = (int)moisL;
+        int mois = (int)moisL-1;
         int jour = (int)jourL;
         int heure = (int)heureL;
         int minute = (int)minuteL;
@@ -53,12 +51,24 @@ public class TimeManager {
         cal.add(cal.SECOND,(int)interval);
         JSONObject newJDate = new JSONObject();
         newJDate.put("Annee",(long)cal.get(Calendar.YEAR));
-        newJDate.put("Mois",(long)cal.get(Calendar.MONTH));
+        newJDate.put("Mois",(long)cal.get(Calendar.MONTH)+1);
         newJDate.put("Jour",(long)cal.get(Calendar.DAY_OF_MONTH));
         newJDate.put("Heure",(long)cal.get(Calendar.HOUR_OF_DAY));
         newJDate.put("Minute",(long)cal.get(Calendar.MINUTE));
         newJDate.put("Seconde",(long)cal.get(Calendar.SECOND));
         return newJDate;
+    }
+
+    public static JSONObject getPresentTime(){
+        Calendar cal = Calendar.getInstance();
+        JSONObject jDate = new JSONObject();
+        jDate.put("Annee",(long)cal.get(Calendar.YEAR));
+        jDate.put("Mois",(long)cal.get(Calendar.MONTH)+1);
+        jDate.put("Jour",(long)cal.get(Calendar.DAY_OF_MONTH));
+        jDate.put("Heure",(long)cal.get(Calendar.HOUR_OF_DAY));
+        jDate.put("Minute",(long)cal.get(Calendar.MINUTE));
+        jDate.put("Seconde",(long)cal.get(Calendar.SECOND));
+        return jDate;
     }
 
     //Générise l'entrée de date pour renvoyer un objet de type JSONObject

@@ -1,1 +1,1 @@
-{"propositionDeBailList":[{"Loyer":3,"Identifiant de l'unite":"max1","Proprietaire":"max","Nombre de periode":10,"Periode":"Heure","Renouvelable":false,"Date de fin":{"Jour":1,"Minute":0,"Seconde":0,"Annee":2022,"Mois":8,"Heure":22},"Supplements":[{"Description":"Permet de stationner une auto a quelques metres de l'unite","Cout":1,"Nom":"Stationnement"}],"Identifiant":"max3","Date de debut":{"Jour":1,"Minute":0,"Seconde":0,"Annee":2022,"Mois":8,"Heure":12}}]}
+{"propositionDeBailList":[]}

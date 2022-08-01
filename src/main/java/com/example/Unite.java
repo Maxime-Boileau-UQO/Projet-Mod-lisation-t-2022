@@ -30,9 +30,6 @@ public class Unite {
         unite.put("Nombre de proposition de bail creer", 0);
         unite.put("Nombre de bail creer", 0);
         unite.put("Possede une proposition de bail", false);
-        if(condition.equals("Louable")){
-            unite.put("Louable", true);
-        }else{unite.put("Louable", false);}
 
         JSONObject proprietaire = JsonManager.getJsonObjectOfAList("JsonProprietaire.json", "Nom d'utilisateur", nomProprietaire);
         String id = nomProprietaire + proprietaire.get("Nombre d'unite creer").toString();

@@ -104,6 +104,37 @@ public class JsonManager {
     }
 
 
+    public static void modifyJObjectArgumentOfList(String targetFile, String keySearch, String keyValue, String keyChanged, JSONObject newValue){
+        
+        JSONObject file = translateFileToJSONObject(targetFile);
+        String rawListName = file.keySet().toString();
+        String listName = rawListName.replace("[", "").replace("]", "");
+        int index = findIndexInJsonList(file, keySearch, keyValue, listName);
+
+        JSONArray jArray = (JSONArray)file.get(listName);
+        JSONObject object = (JSONObject)jArray.get(index);
+        //object.remove(keyChanged);
+        object.put(keyChanged, newValue);
+        updateJsonFile(targetFile, file);
+
+    }
+
+    public static void modifyJArrayArgumentOfList(String targetFile, String keySearch, String keyValue, String keyChanged, JSONArray newValue){
+        
+        JSONObject file = translateFileToJSONObject(targetFile);
+        String rawListName = file.keySet().toString();
+        String listName = rawListName.replace("[", "").replace("]", "");
+        int index = findIndexInJsonList(file, keySearch, keyValue, listName);
+
+        JSONArray jArray = (JSONArray)file.get(listName);
+        JSONObject object = (JSONObject)jArray.get(index);
+        //object.remove(keyChanged);
+        object.put(keyChanged, newValue);
+        updateJsonFile(targetFile, file);
+
+    }
+
+
     public static void modifyJSONObjectOfAnObject(String targetFile, String keySearch, String keyValue, String keyChanged, String newValue) throws ParseException{
         
         JSONObject file = translateFileToJSONObject(targetFile);
@@ -149,6 +180,17 @@ public class JsonManager {
         jArray.add(object);
         updateJsonFile(targetFile, file);
     } 
+
+
+    public static void removeObjectToJsonList(String keySearch, String keyValue, String targetFile){
+        JSONObject file = translateFileToJSONObject(targetFile);
+        String rawListName = file.keySet().toString();
+        String listName = rawListName.replace("[", "").replace("]", "");
+        JSONArray jArray = (JSONArray)file.get(listName);
+        int index = findIndexInJsonList(file, keySearch, keyValue, listName);
+        jArray.remove(index);
+        updateJsonFile(targetFile, file);
+    }
 
 
     /// Permet de retourner un JSONObject recherché dans une liste d'un JSON
