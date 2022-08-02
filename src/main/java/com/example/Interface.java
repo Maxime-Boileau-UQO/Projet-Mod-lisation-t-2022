@@ -234,16 +234,21 @@ public class Interface{
                 JSONObject proprietaire = JsonManager.getJsonObjectOfAList("JsonPersonne.json", "Nom d'utilisateur", unite.get("Nom d'utilisateur du proprietaire").toString());
                 
                 stringArrayListUniteNames.add((String)unite.get("Identifiant"));
-                if((Boolean)unite.get("Possede une proposition de bail")){
-                    unitesAvecProposition.add(String.valueOf(compte));
-                }
-                System.out.println(compte + " - ///// "+unite.get("Type").toString()+
+
+                System.out.print(compte + " - ///// "+unite.get("Type").toString()+
                 " /// "+unite.get("Aire").toString()+
                 " /// "+unite.get("Condition").toString()+
                 " /// "+unite.get("Etat").toString()+
-                " /// "+proprietaire.get("Prenom").toString()+" "+proprietaire.get("Nom").toString()+
-                " /// "+unite.get("Possede une proposition de bail").toString()+
-                " /// "+unite.get("Adresse").toString()+" /////");
+                " /// "+proprietaire.get("Prenom").toString()+" "+proprietaire.get("Nom").toString());
+                if((Boolean)unite.get("Possede une proposition de bail")){
+                    JSONObject proposition = JsonManager.getJsonObjectOfAList("JsonPropositionDeBail", "Identifiant de l'unite", unite.get("Identifiant").toString());
+                    if((Boolean)proposition.get("Visible")){
+                        unitesAvecProposition.add(String.valueOf(compte));
+                        System.out.print(" /// true");
+                    }else{System.out.print(" /// false");}
+                }
+                System.out.println(" /// "+unite.get("Adresse").toString()+" /////");
+                
                 compte++;
             }
         }
@@ -253,15 +258,18 @@ public class Interface{
                 JSONObject unite = (JSONObject)object;
                 JSONObject proprietaire = JsonManager.getJsonObjectOfAList("JsonPersonne.json", "Nom d'utilisateur", unite.get("Nom d'utilisateur du proprietaire").toString());
                 if((Boolean)unite.get("Possede une proposition de bail")){
-                    stringArrayListUniteNames.add((String)unite.get("Identifiant").toString());
-                    unitesAvecProposition.add(String.valueOf(compte));
-                    System.out.println(compte + " - ///// "+unite.get("Type").toString()+
-                    " /// "+unite.get("Aire").toString()+
-                    " /// "+unite.get("Condition").toString()+
-                    " /// "+unite.get("Etat").toString()+
-                    " /// "+proprietaire.get("Prenom").toString()+" "+proprietaire.get("Nom").toString()+
-                    " /// "+unite.get("Adresse").toString()+" /////");
-                    compte++;
+                    JSONObject proposition = JsonManager.getJsonObjectOfAList("JsonPropositionDeBail", "Identifiant de l'unite", unite.get("Identifiant").toString());
+                    if((Boolean)proposition.get("Visible")){
+                        stringArrayListUniteNames.add((String)unite.get("Identifiant").toString());
+                        unitesAvecProposition.add(String.valueOf(compte));
+                        System.out.println(compte + " - ///// "+unite.get("Type").toString()+
+                        " /// "+unite.get("Aire").toString()+
+                        " /// "+unite.get("Condition").toString()+
+                        " /// "+unite.get("Etat").toString()+
+                        " /// "+proprietaire.get("Prenom").toString()+" "+proprietaire.get("Nom").toString()+
+                        " /// "+unite.get("Adresse").toString()+" /////");
+                        compte++;
+                    }
                 }
             }
         }
@@ -470,7 +478,11 @@ public class Interface{
                 String[] arrayList0 = {"y,n"};
                 String reponse0 = takeValidAnswer(arrayList0);
                 if(reponse0.equals("y")){
-                    // Faire les démarches pour confirmer le renouvellement  
+                    //Changer le paramètre à renouvelé le bail de locataire
+                    JsonManager.modifyBoolArgumentOfList("JsonLocataire.json", "Nom d'utilisateur", nomLocataire, "A renouvele le bail", true);
+                    //Changer le paramètre de visibilité et Est pour un renouvelement de la proposition de bail
+                    JsonManager.modifyBoolArgumentOfList("JsonPropositionDeBail.json", "Identifiant de l'unite", unite.get("Identifiant").toString(), "Visible", false);
+                    System.out.println("\nLe bail a été renouvelé avec succès!");
                 }
             }
 
@@ -924,7 +936,7 @@ public class Interface{
                 
             }
             else if(reponse0.equals("p")){
-
+                PropositionDeBail.modifierPropositionDeBail(nomProprietaire);
             }
             
             else{
