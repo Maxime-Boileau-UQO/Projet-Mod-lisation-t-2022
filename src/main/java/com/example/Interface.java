@@ -173,10 +173,10 @@ public class Interface{
             System.out.println("- Paiment = p");
             System.out.println("- Consulter bail = b");
             System.out.println("- Compte = c");
-            System.out.println("- Retourner à la connexion = r");
+            System.out.println("- Quitter la session = s");
             System.out.println("- Quitter le logiciel = q");
 
-            String[] stringArray0 = {"u","p","b","c","r","q"};
+            String[] stringArray0 = {"u","p","b","c","s","q"};
             String reponse0 = takeValidAnswer(stringArray0);
             if(reponse0.equals("u")){
                 rechercheUniteLocataire(locataireName);
@@ -185,18 +185,18 @@ public class Interface{
                 paimentLocataire();
             }
             else if(reponse0.equals("b")){
-                bailLocataire();
+                bailLocataire(locataireName);
             }
             else if(reponse0.equals("c")){
                 compteLocataire(locataireName);
                 return;
             }
-            else if(reponse0.equals("r")){
+            else if(reponse0.equals("s")){
                 System.out.println("Ètes-vous sûr de vouloir quitter la session? (y = oui, n = non)");
                 String[] stringArray1 = {"y","n"};
                 String reponse1 = takeValidAnswer(stringArray1);
                 if(reponse1.equals("y")){
-                    seConnecterLocataire();
+                    startSystem();
                     return;
                 }
             }
@@ -404,8 +404,83 @@ public class Interface{
     }
 
 
-    private static void bailLocataire(){
-        System.out.println("In bail l");
+    private static void bailLocataire(String nomLocataire){
+        Scanner scanner = new Scanner(System.in);
+        JSONObject locataire = JsonManager.getJsonObjectOfAList("JsonLocataire.json", "Nom d'utilisateur", nomLocataire);
+        if(!(Boolean)locataire.get("Cheche location")){
+            JSONObject bail = new JSONObject();
+            JSONArray bails = JsonManager.getArrayOfJsonFile("JsonBail.json");
+            for (Object object : bails) {
+                JSONObject jObject = (JSONObject)object;
+                if(bail.get("Locataire").toString().equals(nomLocataire)&&!(Boolean)bail.get("Termine")){
+                    bail = jObject;
+                    break;
+                }
+            }
+            JSONObject proprietaire = JsonManager.getJsonObjectOfAList("JsonPersonne.json", "Nom d'utilisateur", bail.get("Proprietaire").toString());
+            JSONObject unite = JsonManager.getJsonObjectOfAList("JsonUnite.json", "Identifiant", bail.get("Identifiant de l'unite").toString());
+            JSONObject dateDeDebut = (JSONObject)bail.get("Date de debut");
+            JSONObject dateDeFin = (JSONObject)bail.get("Date de fin");
+            JSONObject solde = JsonManager.getJsonObjectOfAList("Solde", "Identifiant du bail", bail.get("Identifiant").toString());
+            System.out.println("Voici les information sur votre bail:");
+            System.out.println("- Adresse: "+unite.get("Adresse").toString()+ 
+            "\n- Propriétaire: "+proprietaire.get("Prenom").toString()+" "+proprietaire.get("Nom").toString()+
+            "\n- Date de début: "+dateDeDebut.get("Annee")+"/"+dateDeDebut.get("Mois")+"/"+dateDeDebut.get("Jour")+" "+
+            dateDeDebut.get("Heure")+":"+dateDeDebut.get("Minute")+":"+dateDeDebut.get("Seconde")+
+            "\n- Date de fin: "+dateDeFin.get("Annee")+"/"+dateDeFin.get("Mois")+"/"+dateDeFin.get("Jour")+" "+
+            dateDeFin.get("Heure")+":"+dateDeFin.get("Minute")+":"+dateDeFin.get("Seconde")+
+            "\n- Nom de l'assureur: "+bail.get("Nom assureur")+
+            "\n- Numéro de l'assurance: "+bail.get("Numero d'assurance")+
+            "\n- Renouvelable: "+bail.get("Renouvelalble")+
+            "\n- Renouvelé: "+locataire.get("A renouvele le bail"));
+            JSONArray supplements = (JSONArray)bail.get("Supplements");
+            if(!supplements.isEmpty()){
+                System.out.println("- Supléments:");
+                for (Object object : supplements) {
+                    JSONObject supplement = (JSONObject)object;
+                    System.out.println("    * "+supplement.get("Nom")+": "+supplement.get("Description"));
+                } 
+            }
+            System.out.println("- Coût total: "+solde.get("Total")+
+            "\n- Payé: "+solde.get("Payer"));
+            
+            if((Boolean)bail.get("Renouvelable")&&!(Boolean)locataire.get("A renouvele le bail")){
+                JSONObject proposition = JsonManager.getJsonObjectOfAList("JsonPropositionDeBail.json", "Identifiant de l'unite", unite.get("Identifiant").toString());
+                JSONObject dateDeDebutp = (JSONObject)proposition.get("Date de debut");
+                JSONObject dateDeFinp = (JSONObject)proposition.get("Date de fin");
+                System.out.println("\nVoulez-vous renouveler ce bail? (y = oui, n= non) Voici les informations de la proposition de bail pour le renouvellement:");
+                System.out.println("- Période: "+proposition.get("Periode")+ 
+                "\n- Nombre de périodes: "+proposition.get("Nombre de periode")+
+                "\n- Loyer par période: "+proposition.get("Loyer")+
+                "\n- Nombre de périodes: "+proposition.get("Nombre de periode")+
+                "\n- Date de début: "+dateDeDebutp.get("Annee")+"/"+dateDeDebutp.get("Mois")+"/"+dateDeDebutp.get("Jour")+" "+
+                dateDeDebutp.get("Heure")+":"+dateDeDebutp.get("Minute")+":"+dateDeDebutp.get("Seconde")+
+                "\n- Date de fin: "+dateDeFinp.get("Annee")+"/"+dateDeFinp.get("Mois")+"/"+dateDeFinp.get("Jour")+" "+
+                dateDeFinp.get("Heure")+":"+dateDeFinp.get("Minute")+":"+dateDeFinp.get("Seconde")+
+                "\nRenouvelalble: "+proposition.get("Renouvelalble"));
+                JSONArray supplementsp = (JSONArray)proposition.get("Supplements");
+                if(!supplementsp.isEmpty()){
+                    System.out.println("- Supléments:");
+                    for (Object object : supplementsp) {
+                        JSONObject supplement = (JSONObject)object;
+                        System.out.println("    * "+supplement.get("Nom")+": "+supplement.get("Description")+". Prix: "+supplement.get("Cout")+"$.");
+                    } 
+                }
+                System.out.println();
+                String[] arrayList0 = {"y,n"};
+                String reponse0 = takeValidAnswer(arrayList0);
+                if(reponse0.equals("y")){
+                    // Faire les démarches pour confirmer le renouvellement  
+                }
+            }
+
+        }
+        else{
+            System.out.println("Vous n'avez présentement pas de bail.");
+        }
+
+        System.out.print("\nAppuyez sur la touche entrer pour retourner au menu.");
+        scanner.nextLine();
     }
 
 
@@ -487,10 +562,10 @@ public class Interface{
             System.out.println("- Paiments = p");
             System.out.println("- Unités et baux = u");
             System.out.println("- Compte = c");
-            System.out.println("- Retourner à la connexion = r");
+            System.out.println("- Quitter la session = s");
             System.out.println("- Quitter le logiciel = q");
 
-            String[] stringArray0 = {"p","u","c","r","q"};
+            String[] stringArray0 = {"p","u","c","s","q"};
             String reponse0 = takeValidAnswer(stringArray0);
             if(reponse0.equals("p")){
                 paimentProprietaire(nomProprietaire);
@@ -508,7 +583,7 @@ public class Interface{
                 String[] stringArray1 = {"y","n"};
                 String reponse1 = takeValidAnswer(stringArray1);
                 if(reponse1.equals("y")){
-                    seConnecterProprietaire();
+                    startSystem();
                     return;
                 }
             }
@@ -608,7 +683,7 @@ public class Interface{
                     else if(reponse1.equals("s")){type = "Surface ouverte commerciale";}
                     else{type = "Magasin";}
                     System.out.print("- Entrez l'adresse de l'unité: ");
-                    String adresse = scanner.next();
+                    String adresse = scanner.nextLine();
                     System.out.print("- Entrez la ville de l'unité: ");
                     scanner.nextLine();
                     String ville = scanner.next();
@@ -791,9 +866,32 @@ public class Interface{
                     Boolean renouvelable;
                     if(reponse3.equals("y")){renouvelable = true;}
                     else{renouvelable = false;}
-                    System.out.println("- Entrez la date de début de location sous le format aaaa-MM-jj-hh-mm-ss.");
-                    JSONObject dateDeDebut = TimeManager.takeValidJObjectDate();
-                    long interval = TimeManager.calulateTimeIntervalInSeconds(reponse2, nbPeriode);
+                    JSONObject dateDeDebut = new JSONObject();
+                    
+                    if(jUnite.get("Etat").toString().equals("Loue")){
+                        JSONArray bails = JsonManager.getArrayOfJsonFile("JsonBail.json");
+                        JSONObject bail = new JSONObject();
+                        for (Object object : bails) {
+                            JSONObject jBail = (JSONObject)object;
+                            if(jBail.get("Identifiant de l'unite").toString().equals(jUnite.get("Identifiant").toString())){
+                                bail = jBail;
+                            }
+                        }
+                        while(true){
+                            System.out.println("- Entrez la date de début de location sous le format aaaa-MM-jj-hh-mm-ss.");
+                            dateDeDebut = TimeManager.takeValidJObjectDate();
+                            JSONObject dateFinBail = (JSONObject)bail.get("Date de fin");
+                            if(!TimeManager.getDate1BeforeDate2(dateDeDebut, dateFinBail)){
+                                break;
+                            }
+                            System.out.println("ERREUR: La date de début entré est avant la fin du bail courrant de cette unité.");
+                        }
+                    }
+                    else{
+                        System.out.println("- Entrez la date de début de location sous le format aaaa-MM-jj-hh-mm-ss.");
+                        dateDeDebut = TimeManager.takeValidJObjectDate();
+                    }
+                    long interval = TimeManager.calulateTimeIntervalInSeconds(periode, nbPeriode);
                     JSONObject dateDeFin = TimeManager.addTimeIntervalToJDate(dateDeDebut, interval);
                     System.out.println("Voulez vous ajouter un supplément à cette proposition de bail? (y = oui, n = non)");
                     reponse3 = takeValidAnswer(stringArray3);
@@ -802,9 +900,9 @@ public class Interface{
                         while(true){
                             JSONObject suplement = new JSONObject();
                             System.out.print("- Entrez le nom du supplément: ");
-                            String nomSuplement = scanner.next();
+                            String nomSuplement = scanner.nextLine();
                             System.out.print("- Entrez une description du suplément: ");
-                            String descriptionSuplement =  scanner.next();
+                            String descriptionSuplement =  scanner.nextLine();
                             System.out.println("- Entrez coût du supplément par période en $ canadien (seulement des entiers son acceptés).");
                             long cout = takePositiveInteger();
                             suplement.put("Nom", nomSuplement);

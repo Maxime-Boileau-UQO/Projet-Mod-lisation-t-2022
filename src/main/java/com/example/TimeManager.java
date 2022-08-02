@@ -15,16 +15,16 @@ public class TimeManager {
     }
     public static long calulateTimeIntervalInSeconds(String periode, long nbPeriode){
         long timeInterval;
-        if(periode.equals("o")){
+        if(periode.equals("Mois")){
             timeInterval = nbPeriode*2592000;
         }
-        else if(periode.equals("j")){
+        else if(periode.equals("Jour")){
             timeInterval = nbPeriode*86400;
         }
-        else if(periode.equals("h")){
+        else if(periode.equals("Heure")){
             timeInterval = nbPeriode*3600;
         }
-        else if(periode.equals("m")){
+        else if(periode.equals("Minute")){
             timeInterval = nbPeriode*60;
         }
         else{
@@ -195,5 +195,38 @@ public class TimeManager {
         jDate.put("Minute", minute);
         jDate.put("Seconde", seconde);
         return jDate;
+    }
+
+    public static Boolean getDate1BeforeDate2(JSONObject date1, JSONObject date2){
+        long anneL1 = (long)date1.get("Annee");
+        long moisL1 = (long)date1.get("Mois");
+        long jourL1 = (long)date1.get("Jour");
+        long heureL1 = (long)date1.get("Heure");
+        long minuteL1 = (long)date1.get("Minute");
+        long secondeL1 = (long)date1.get("Seconde");
+        int anne1 = (int)anneL1;
+        int mois1 = (int)moisL1-1;
+        int jour1 = (int)jourL1;
+        int heure1 = (int)heureL1;
+        int minute1 = (int)minuteL1;
+        int seconde1 = (int)secondeL1;
+        Calendar cal1 = Calendar.getInstance();
+        cal1.set(anne1,mois1,jour1,heure1,minute1,seconde1);
+
+        long anneL = (long)date2.get("Annee");
+        long moisL = (long)date2.get("Mois");
+        long jourL = (long)date2.get("Jour");
+        long heureL = (long)date2.get("Heure");
+        long minuteL = (long)date2.get("Minute");
+        long secondeL = (long)date2.get("Seconde");
+        int anne = (int)anneL;
+        int mois = (int)moisL-1;
+        int jour = (int)jourL;
+        int heure = (int)heureL;
+        int minute = (int)minuteL;
+        int seconde = (int)secondeL;
+        Calendar cal2 = Calendar.getInstance();
+        cal2.set(anne,mois,jour,heure,minute,seconde);
+        return cal1.before(cal2);
     }
 }

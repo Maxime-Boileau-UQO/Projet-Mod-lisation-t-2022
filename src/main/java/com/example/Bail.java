@@ -39,5 +39,20 @@ public class Bail {
         JsonManager.modifyBoolArgumentOfList("JsonLocataire.json", "Nom d'utilisateur", nomLocataire, "Cherche location", false);
         JsonManager.modifyArgumentOfList("JsonLocataire.json", "Nom d'utilisateur", nomLocataire, "Proprietaire actuel", unite.get("Nom d'utilisateur du proprietaire").toString());
         JsonManager.addObjectToJsonList(bail, "JsonBail.json");
+        if((Boolean)proposition.get("Renouvelable")){
+            proposition.put("Visible",false);
+            long interval = TimeManager.calulateTimeIntervalInSeconds(proposition.get("Periode").toString(), (long)proposition.get("Nombre de periode"));
+            JSONObject dateDedebut = TimeManager.addTimeIntervalToJDate((JSONObject)proposition.get("Date de debut"), 1);
+            JSONObject dateDeFin = TimeManager.addTimeIntervalToJDate(dateDedebut, interval);
+            proposition.put("Date de debut", dateDedebut);
+            proposition.put("Date de fin", dateDeFin);
+
+            String idProp = proposition.get("Proprietaire") + unite.get("Nombre de proposition de bail creer").toString();
+            proposition.put("Identifiant", idProp);
+            long nouveauCompteur1 = (long)unite.get("Nombre de proposition de bail creer")+1;
+            JsonManager.modifyIntArgumentOfList("JsonUnite.json", "Identifiant", unite.get("Identifiant").toString(), "Nombre de proposition de bail creer", nouveauCompteur1);
+            JsonManager.modifyBoolArgumentOfList("JsonUnite.json", "Identifiant", unite.get("Identifiant").toString(), "Possede une proposition de bail", true);
+            JsonManager.addObjectToJsonList(proposition, "JsonPropositionDeBail.json");
+        }
     }
 }

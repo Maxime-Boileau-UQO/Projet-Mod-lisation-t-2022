@@ -15,6 +15,8 @@ public class PropositionDeBail {
         propDeBail.put("Renouvelable", renouvelable);
         propDeBail.put("Proprietaire", nomProprietaire);
         propDeBail.put("Supplements", suplements);
+        propDeBail.put("Visible", true);
+        propDeBail.put("Est pour un renouvlement", false);
 
         JSONObject unite = JsonManager.getJsonObjectOfAList("JsonUnite.json", "Identifiant", idUnite);
         String id = nomProprietaire + unite.get("Nombre de proposition de bail creer").toString();

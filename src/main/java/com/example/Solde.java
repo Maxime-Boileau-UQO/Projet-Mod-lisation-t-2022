@@ -71,7 +71,7 @@ public class Solde {
                     JSONObject paiement = (JSONObject)object2;
                     JSONObject date = (JSONObject)paiement.get("Date");
                     System.out.println("    * Date: "+date.get("Annee")+"/"+date.get("Mois")+"/"+date.get("Jour")+" "+
-                    date.get("Heure")+":"+date.get("Minute")+":"+date.get("Seconde")+":"+
+                    date.get("Heure")+":"+date.get("Minute")+":"+date.get("Seconde")+
                     ". Montant: "+paiement.get("Montant")+"$.");
                 }
 
@@ -110,7 +110,7 @@ public class Solde {
                     JSONObject paiement = (JSONObject)object2;
                     JSONObject date = (JSONObject)paiement.get("Date");
                     System.out.println("    * Date: "+date.get("Annee")+"/"+date.get("Mois")+"/"+date.get("Jour")+" "+
-                    date.get("Heure")+":"+date.get("Minute")+":"+date.get("Seconde")+":"+
+                    date.get("Heure")+":"+date.get("Minute")+":"+date.get("Seconde")+
                     ". Montant: "+paiement.get("Montant")+"$.");
                 }
 

@@ -24,6 +24,7 @@ public class Locataire {
         interts.put("Autre", false);
         nouveauLocataire.put("Interet", interts);
         nouveauLocataire.put("Proprietaire actuel", "");
+        nouveauLocataire.put("A renouvele le bail", false);
         JsonManager.addObjectToJsonList(nouveauLocataire, "JsonLocataire.json");
         Personne.addPersonneToJson(nomDUtilisateur, motDePasse, prenom, nom);
     }
