@@ -101,7 +101,7 @@ public class PropositionDeBail {
                 JsonManager.modifyArgumentOfList("JsonUnite.json", "Identifiant", nomProposition, elementChange, "Pas louable pour reparation");
                 JSONArray jArray2 = JsonManager.getArrayOfJsonFile("JsonPropositionDeBail.json");
                 for (Object object : jArray2) {
-                    JSONObject proposition = (JSONObject)object;
+                    //JSONObject proposition = (JSONObject)object;
                     if(proposition.get("Proprietaire").equals(nomProprietaire)){
                         JsonManager.removeObjectToJsonList("Proprietaire", nomProprietaire, "JsonPropositionDeBail.json");
                         break;
